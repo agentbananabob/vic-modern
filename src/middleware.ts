@@ -1,15 +1,8 @@
-import { auth } from "@/lib/auth";
-import { NextResponse } from "next/server";
+import NextAuth from "next-auth";
+import { authConfig } from "@/lib/auth.config";
 
-const PROTECTED = ["/ideas/new", "/portfolio"];
-
-export default auth((req) => {
-  const { pathname } = req.nextUrl;
-  if (PROTECTED.some(p => pathname.startsWith(p)) && !req.auth) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
-  return NextResponse.next();
-});
+// Use edge-safe config only — no Prisma/DB imports here.
+export const { auth: middleware } = NextAuth(authConfig);
 
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],

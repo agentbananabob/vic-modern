@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  username   String   @unique
+  name       String?
+  bio        String?
+  avatarUrl  String?
+  role       Role     @default(MEMBER)
+  reputation Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  ideas      Idea[]
+  votes      Vote[]
+  comments   Comment[]
+  watchlist  Watchlist[]
+  accounts   Account[]
+  sessions   Session[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Idea {
+  id          String     @id @default(cuid())
+  title       String
+  ticker      String
+  exchange    String?
+  thesis      String     @db.Text
+  catalysts   String?    @db.Text
+  risks       String?    @db.Text
+  targetPrice Float?
+  entryPrice  Float?
+  timeframe   String?
+  side        IdeaSide
+  status      IdeaStatus @default(PUBLISHED)
+  score       Float      @default(0)
+  viewCount   Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  authorId   String
+  author     User      @relation(fields: [authorId], references: [id])
+  votes      Vote[]
+  comments   Comment[]
+  watchlists Watchlist[]
+
+  @@index([ticker])
+  @@index([authorId])
+  @@map("ideas")
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  value     Int      // +1 or -1
+  createdAt DateTime @default(now())
+
+  userId String
+  ideaId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  idea   Idea   @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, ideaId])
+  @@map("votes")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  body      String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId   String
+  ideaId   String
+  parentId String?
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  idea     Idea      @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  parent   Comment?  @relation("Replies", fields: [parentId], references: [id])
+  replies  Comment[] @relation("Replies")
+
+  @@map("comments")
+}
+
+model Watchlist {
+  id      String   @id @default(cuid())
+  note    String?
+  addedAt DateTime @default(now())
+
+  userId String
+  ideaId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  idea   Idea   @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, ideaId])
+  @@map("watchlist")
+}
+
+enum Role {
+  GUEST
+  MEMBER
+  ANALYST
+  ADMIN
+}
+
+enum IdeaSide {
+  LONG
+  SHORT
+}
+
+enum IdeaStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}

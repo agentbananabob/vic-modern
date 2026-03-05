@@ -1,65 +1,51 @@
-import Image from "next/image";
+import Link from "next/link";
+import { TrendingUp, TrendingDown, Search, Users, Zap } from "lucide-react";
 
-export default function Home() {
+export default function HomePage() {
+  const features = [
+    { icon: <TrendingUp className="w-5 h-5 text-emerald-600" />, title: "Long Ideas",   desc: "Discover undervalued companies with compelling upside." },
+    { icon: <TrendingDown className="w-5 h-5 text-red-500" />,   title: "Short Ideas",  desc: "Find overvalued situations and potential shorts." },
+    { icon: <Search className="w-5 h-5 text-blue-500" />,        title: "Deep Research", desc: "Read detailed theses with catalysts, risks, and price targets." },
+    { icon: <Users className="w-5 h-5 text-purple-500" />,       title: "Community",    desc: "Vote on ideas and discuss with serious investors." },
+    { icon: <Zap className="w-5 h-5 text-amber-500" />,          title: "Score System", desc: "Community scoring surfaces the highest-quality ideas." },
+  ];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      {/* Hero */}
+      <section className="max-w-3xl mx-auto px-4 py-20 text-center">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold mb-6">
+          <TrendingUp className="w-3.5 h-3.5" />
+          App-first • Community-driven • Value investing
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight tracking-tight mb-4">
+          Investment ideas from<br className="hidden sm:block" /> serious investors
+        </h1>
+        <p className="text-lg text-gray-500 max-w-xl mx-auto mb-8">
+          A modern home for value investors to share, debate, and discover long and short equity ideas with real rigor.
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <Link href="/ideas" className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-colors shadow-sm">
+            Browse Ideas
+          </Link>
+          <Link href="/signup" className="px-6 py-3 rounded-xl border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold transition-colors">
+            Join Free
+          </Link>
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* Features */}
+      <section className="max-w-3xl mx-auto px-4 pb-20">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {features.map(f => (
+            <div key={f.title} className="bg-white rounded-2xl border border-gray-200 p-5">
+              <div className="mb-2">{f.icon}</div>
+              <h3 className="font-semibold text-gray-900 mb-1">{f.title}</h3>
+              <p className="text-sm text-gray-500">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
   );
 }

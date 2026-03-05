@@ -40,4 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-/src/generated/prisma
+# Prisma generated client is committed so Turbopack can resolve it
+# (Turbopack respects .gitignore and won't resolve gitignored modules)
